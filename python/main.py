@@ -32,12 +32,19 @@ slice_voice_init(vg.eMBBvoice,up_voz,high,moderate,low)
 run = 1 #This value controls the simulation loop.
 max_run = 1000 #This value sets the maximum number of iterations
 
-#The vectors below are flags to control 
-#Position 0 sets
+#The vectors below are flags to enable the adition of subscriber and to enable ani-affinity criteria.
+#If the value of position 0 is 1, it means that for a determinated algorithm, there are is available resources, thus the algorithm will run in the next interaction.
+#If the value of position 0 is 0, it means that for a determinated algorithm, there is no available resources, thus the algorithm will no longer run. 
+
+#If the value of position 1 is 1, it means that for a determinated algorithm, the affinity-rule was not broken, thus the simulation will take into account the anti-affinity rule for VNF allocation.
+#If the value of position 1 is 0, it means that for a determinated algorithm, the affinity-rule was broken, thus the simulation will ignore the anti-affinity rule for VNF allocation.
+
 rr_info = [1,1]
 hg_info = [1,1]
 vg_info = [1,1]
 
+#Results are saved into the (.*)results.txt
+#Logs from allocation are saved into the (.*)mapping.txt
 results_rr = open(f'RR/rr-results.txt', "w")
 mapping_rr = open(f'RR/rr-mapping.txt', "w")
 results_hg = open(f'HG/hg-results.txt', "w")
@@ -45,8 +52,7 @@ mapping_hg = open(f'HG/hg-mapping.txt', "w")
 results_vg = open(f'VG/vg-results.txt', "w")
 mapping_vg = open(f'VG/vg-mapping.txt', "w")
 
-
-
+#
 while run <= max_run:
     loop_times = 0
     loop = 1
