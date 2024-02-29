@@ -1,1 +1,16 @@
-
+Algoritmo para alocação de recursos e criação de slices na rede 5G.
+### O que precisamos? ###
+1 - Definir as VNF's (Virtual Network Function) - Bolinhas. São basicamente as máquinas virtuais
+  1.1 - Definir o equacinamento de usuários para cada uma dessas máquinas virtuais (Pode estar em um arquivo separado)
+2 - Definir os Servidores - serão 20 servidores de tamanhos iguais
+3 - Definir as fatias de rede (Slices) - Basicamente são um conjunto de bolinhas pré-definido
+4 - Definir os métodos de alocação de recurso (Como por as bolinhas nos servidores) 
+  4.1 - Round-Robin - De forma simples é colocar uma bolinha dentro do servidor 1, depois no servidor 2 e seguir esse ciclo até a caixa 20 e recomeçar do 1.
+  4.2 - Vertical Greedy - Atochar bolinhas dentro do mesmo servidor até não caber mais e após isso mapear qual que está mais vazio e seguir até tudo estar lotado
+  4.3 - Horizontal Greedy - Colocar uma bolinha e mapear após uma única bolinha qual será o próximo servidor mais vazio e colocar nele. Muito semelhante ao RR
+    OBS: Esse sistema de pesos tem que ser feito de forma a contabilizar o que mais possui espaço disponível
+    OBS2: Há um complicador que é a regra de anti-afinidade. (Pode ser feito depois) A ideia é a seguinte: Uma mesma VNF não pode ter uma igual no mesmo servidor, entretanto,
+    temos que mapear quando essa regra tem que ser desrespeitada para a alocação seguir.
+5 - Definir o processo de entrada de usuários na rede (Deve ser um fator randômico de forma a 80 por cento dos usuários serem de um tipo e 20 do outro) - Vídeo e Voz
+6 - Definir quando uma VNF tem que ser escalada (Quando o número de usuários estoura pra ela ser adicionada. Também deve ser adotado um "Fator randômico" em um range já estabelecido.)
+7 - Trabalhar com os parâmetros já definidos para saírem da forma ideal no Excel de forma a fazermos gráficos com os resultados.
