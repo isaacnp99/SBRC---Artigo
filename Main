@@ -1,1 +1,307 @@
+using System;
 
+namespace AntiAffinity_Article
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int[] host_1 = new int[3];
+            host_1 = Initial_Computing_Resources_in_Host();
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine(host_1[i]);
+            }
+            Console.WriteLine();
+
+
+            host_1 = Allocate_VNF_with_Anti_Affinity(host_1, Resource_Requirement_AMF(), 3, 4);
+
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine(host_1[i]);
+            }
+            Console.WriteLine();
+        }
+
+        //Declaring the initial computing resources that are available in a host
+        static int[] Initial_Computing_Resources_in_Host()
+        {
+            //Taishan Server Model 2480
+            //https://www.hikunpeng.com/document/detail/en/kunpengcpfs/ecosystemEnable/OpenStack/kunpengopenstack_05_0003.html
+            //https://www.hikunpeng.com/en/compute/kunpeng920
+
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Initial_Computing_Resources_in_Host = new int[3];
+
+            //Here the values are declared statically
+            int CPU_Kunpeng_920_7260 = 64; //64 Cores per each Kunpeng 920 7260
+            int SSD_SATA = 480; //480GBs of Storage per SATA SSD
+            int RAM_DDR4_DIMMs = 32; //32 GB of RAM per DDR4 DIMM
+
+            //Taishan Server Model 2480
+            int number_of_CPU_processors = 4;
+            int number_of_SSD_SATAs = 2;
+            int number_of_DDR4_DIMMs = 32;
+
+            //Here the values are assigned statically to each position
+            Initial_Computing_Resources_in_Host[0] = number_of_CPU_processors * CPU_Kunpeng_920_7260;
+            Initial_Computing_Resources_in_Host[1] = number_of_SSD_SATAs * SSD_SATA;
+            Initial_Computing_Resources_in_Host[2] = number_of_DDR4_DIMMs * RAM_DDR4_DIMMs;
+
+            //Here the list of values is returned
+            return Initial_Computing_Resources_in_Host;
+        }
+
+        static int[] Allocate_VNF(int[] available_computing_resources, int[] VNF, int number_of_VNFs)
+        {
+            for(int i =0; i < number_of_VNFs; i++)
+            {
+                //First, it will check if there are available resources, if there are available resources, he will allocate the VNF
+                if(available_computing_resources[0] > VNF[0] && available_computing_resources[1] > VNF[1] && available_computing_resources[2] > VNF[2])
+                {
+                    //Here I am deducing from the the available computing resources the values of the computing resources that are consumed by the VNF during allocation
+                    available_computing_resources[0] = available_computing_resources[0] - VNF[0]; //CPU
+                    available_computing_resources[1] = available_computing_resources[1] - VNF[1]; //SSD
+                    available_computing_resources[2] = available_computing_resources[2] - VNF[2]; //RAM
+                }
+
+                //Otherwise, he will break the allocation
+                else
+                {
+                    break;
+                }
+            }
+
+            return available_computing_resources;
+
+        }
+        
+        static int[] Allocate_VNF_with_Anti_Affinity (int[] available_computing_resources, int[] VNF, int number_of_VNFs, int anti_affinity_value)
+        {
+
+            if (number_of_VNFs <= anti_affinity_value)
+            {
+                available_computing_resources = Allocate_VNF(available_computing_resources, VNF, number_of_VNFs)
+;           }
+
+            else
+            {
+                available_computing_resources = Allocate_VNF(available_computing_resources, VNF, anti_affinity_value);
+            }
+
+            return available_computing_resources;
+        }
+
+        //All the methods "Resource_Requirement_XXXX" are methods that will return the computing resources that are required to deploy/scale a new VNF
+        static int[] Resource_Requirement_AMF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_AMF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_AMF = 6;
+            int SSD_AMF = 6;
+            int RAM_AMF = 12;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_AMF[0] = CPU_AMF;
+            Computing_Resources_AMF[1] = SSD_AMF;
+            Computing_Resources_AMF[2] = RAM_AMF;
+
+            //Here the list of values is returned
+            return Computing_Resources_AMF;
+        }
+
+        static int[] Resource_Requirement_SMF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_SMF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_SMF = 6;
+            int SSD_SMF = 6;
+            int RAM_SMF = 12;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_SMF[0] = CPU_SMF;
+            Computing_Resources_SMF[1] = SSD_SMF;
+            Computing_Resources_SMF[2] = RAM_SMF;
+
+            //Here the list of values is returned
+            return Computing_Resources_SMF;
+        }
+
+        static int[] Resource_Requirement_PMF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_PCF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_PCF = 3;
+            int SSD_PCF = 6;
+            int RAM_PCF = 12;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_PCF[0] = CPU_PCF;
+            Computing_Resources_PCF[1] = SSD_PCF;
+            Computing_Resources_PCF[2] = RAM_PCF;
+
+            //Here the list of values is returned
+            return Computing_Resources_PCF;
+        }
+
+        static int[] Resource_Requirement_UDM()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_UDM = new int[3];
+
+            //Here the values are declared statically
+            int CPU_UDM = 12;
+            int SSD_UDM = 24;
+            int RAM_UDM = 60;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_UDM[0] = CPU_UDM;
+            Computing_Resources_UDM[1] = SSD_UDM;
+            Computing_Resources_UDM[2] = RAM_UDM;
+
+            //Here the list of values is returned
+            return Computing_Resources_UDM;
+        }
+
+        static int[] Resource_Requirement_AF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_AF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_AF = 12;
+            int SSD_AF = 24;
+            int RAM_AF = 24;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_AF[0] = CPU_AF;
+            Computing_Resources_AF[1] = SSD_AF;
+            Computing_Resources_AF[2] = RAM_AF;
+
+            //Here the list of values is returned
+            return Computing_Resources_AF;
+        }
+
+        static int[] Resource_Requirement_NEF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_NEF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_NEF = 6;
+            int SSD_NEF = 6;
+            int RAM_NEF = 12;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_NEF[0] = CPU_NEF;
+            Computing_Resources_NEF[1] = SSD_NEF;
+            Computing_Resources_NEF[2] = RAM_NEF;
+
+            //Here the list of values is returned
+            return Computing_Resources_NEF;
+        }
+
+        static int[] Resource_Requirement_NSSF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_NSSF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_NSSF = 6;
+            int SSD_NSSF = 6;
+            int RAM_NSSF = 12;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_NSSF[0] = CPU_NSSF;
+            Computing_Resources_NSSF[1] = SSD_NSSF;
+            Computing_Resources_NSSF[2] = RAM_NSSF;
+
+            //Here the list of values is returned
+            return Computing_Resources_NSSF;
+        }
+
+        static int[] Resource_Requirement_NRF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_NRF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_NRF = 6;
+            int SSD_NRF = 6;
+            int RAM_NRF = 12;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_NRF[0] = CPU_NRF;
+            Computing_Resources_NRF[1] = SSD_NRF;
+            Computing_Resources_NRF[2] = RAM_NRF;
+
+            //Here the list of values is returned
+            return Computing_Resources_NRF;
+        }
+
+        static int[] Resource_Requirement_AUSF()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_AUSF = new int[3];
+
+            //Here the values are declared statically
+            int CPU_AUSF = 12;
+            int SSD_AUSF = 24;
+            int RAM_AUSF = 60;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_AUSF[0] = CPU_AUSF;
+            Computing_Resources_AUSF[1] = SSD_AUSF;
+            Computing_Resources_AUSF[2] = RAM_AUSF;
+
+            //Here the list of values is returned
+            return Computing_Resources_AUSF;
+        }
+
+        static int[] Resource_Requirement_UPF_Video()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_UPF_Video = new int[3];
+
+            //Here the values are declared statically
+            int CPU_UPF_Video = 48;
+            int SSD_UPF_Video = 78;
+            int RAM_UPF_Video = 168;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_UPF_Video[0] = CPU_UPF_Video;
+            Computing_Resources_UPF_Video[1] = SSD_UPF_Video;
+            Computing_Resources_UPF_Video[2] = RAM_UPF_Video;
+
+            //Here the list of values is returned
+            return Computing_Resources_UPF_Video;
+        }
+
+        static int[] Resource_Requirement_UPF_Voice()
+        {
+            //Here I declare a list of that will hold 3 integers value, which will be CPU, SSD and RAM
+            int[] Computing_Resources_UPF_Voice = new int[3];
+
+            //Here the values are declared statically
+            int CPU_UPF_Voice = 30;
+            int SSD_UPF_Voice = 60;
+            int RAM_UPF_Voice = 72;
+
+            //Here the values are assigned statically to each position
+            Computing_Resources_UPF_Voice[0] = CPU_UPF_Voice;
+            Computing_Resources_UPF_Voice[1] = SSD_UPF_Voice;
+            Computing_Resources_UPF_Voice[2] = RAM_UPF_Voice;
+
+            //Here the list of values is returned
+            return Computing_Resources_UPF_Voice;
+        }
+
+    }
+}
